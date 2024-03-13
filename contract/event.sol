@@ -18,6 +18,7 @@ contract NFTFactory is ERC721, Ownable {
         bool closed;
         mapping(address => bool) winners;
         string imageUrl;
+        string eventname;
     }
 
     // Mapping from event ID to Event
@@ -30,13 +31,14 @@ contract NFTFactory is ERC721, Ownable {
     constructor() ERC721("ShardEvent", "SE") Ownable(msg.sender) {}
 
     // Create an event, mint an NFT, and deposit prize pool
-    function createEvent(string  memory _endTime, uint256 _prizepool, string memory _imageUrl) external payable {
+    function createEvent(string memory _eventName ,string  memory _endTime, uint256 _prizepool, string memory _imageUrl) external payable {
         require(msg.value == _prizepool, "Deposit amount must be greater than zero");
 
         // Mint new NFT
         _safeMint(msg.sender, eventIdCounter);
 
         events[eventIdCounter].eventId = eventIdCounter;
+        events[eventIdCounter].eventname = _eventName;
         events[eventIdCounter].creator = msg.sender; // Store the creator's address
         events[eventIdCounter].poolPrize = msg.value;
         events[eventIdCounter].startTime = block.timestamp;
@@ -77,12 +79,14 @@ contract NFTFactory is ERC721, Ownable {
         view
         returns (
             uint256[] memory eventIds,
+             string[] memory eventNames,
             address[] memory creators,
             uint256[] memory poolPrizes,
             uint256[] memory startTimes,
             string[] memory endTimes,
             bool[] memory closedStatus,
             string[] memory imageUrls
+            
         )
     {
         eventIds = new uint256[](eventIdCounter);
@@ -92,9 +96,11 @@ contract NFTFactory is ERC721, Ownable {
         endTimes = new string[](eventIdCounter);
         closedStatus = new bool[](eventIdCounter);
         imageUrls = new string[](eventIdCounter);
+         eventNames = new string[](eventIdCounter); 
 
         for (uint256 i = 0; i < eventIdCounter; i++) {
             eventIds[i] = events[i].eventId;
+            eventNames[i] = events[i].eventname;
             creators[i] = events[i].creator;
             poolPrizes[i] = events[i].poolPrize;
             startTimes[i] = events[i].startTime;
@@ -103,6 +109,6 @@ contract NFTFactory is ERC721, Ownable {
             imageUrls[i] = events[i].imageUrl;
         }
 
-        return (eventIds, creators, poolPrizes, startTimes, endTimes, closedStatus, imageUrls);
+        return (eventIds,eventNames, creators, poolPrizes, startTimes, endTimes, closedStatus, imageUrls);
     }
 }
