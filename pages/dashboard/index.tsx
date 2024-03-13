@@ -312,7 +312,7 @@ const Dashboard: NextPage = () => {
       <nav className="bg-gray-900 text-white p-4 flex justify-between items-center">
         {/* BeraEvents on the left */}
         <Link href="/">
-          <p className="text-2xl font-bold text-white">BeraEvents</p>
+          <p className="text-2xl font-bold text-white">ShardEvents</p>
         </Link>
 
         {/* Add Event button in the center */}
